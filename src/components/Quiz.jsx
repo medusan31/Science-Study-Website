@@ -16,6 +16,7 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
   const [calcValue, setCalcValue] = useState('')
   const [calcUnit, setCalcUnit] = useState('')
   const [calcFeedbackShown, setCalcFeedbackShown] = useState(false)
+  const [mcFeedbackShown, setMcFeedbackShown] = useState(false)
   const [answers, setAnswers] = useState({})
 
   const q = questions[current]
@@ -35,14 +36,18 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
     setCalcValue('')
     setCalcUnit(questions[current].allowedUnits?.[0] ?? '')
     setCalcFeedbackShown(false)
+    setMcFeedbackShown(false)
   }, [current])
 
   const handleSelect = (optionId) => {
-    if (instantFeedback && selected !== null) return
     setSelected(optionId === selected ? null : optionId)
   }
 
   const handleNext = () => {
+    if (!isCalc && instantFeedback && !mcFeedbackShown) {
+      setMcFeedbackShown(true)
+      return
+    }
     if (isCalc && instantFeedback && !calcFeedbackShown) {
       setCalcFeedbackShown(true)
       return
@@ -59,7 +64,7 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
     }
   }
 
-  const showMCFeedback = instantFeedback && selected !== null && !isCalc
+  const showMCFeedback = mcFeedbackShown
   const correctOpt = q.options?.find(o => o.correct)
   const selectedCorrect = selected !== null && q.options?.find(o => o.id === selected)?.correct
   const calcCorrect = calcFeedbackShown && checkCalc(q, calcValue, calcUnit || q.allowedUnits?.[0])
@@ -77,7 +82,7 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
     ? 'Check Answer'
     : isLast ? 'Finish Quiz' : 'Next Question'
 
-  const isNextDisabled = (isCalc && instantFeedback && calcFeedbackShown) ? false : !hasAnswer
+  const isNextDisabled = (instantFeedback && (mcFeedbackShown || calcFeedbackShown)) ? false : !hasAnswer
 
   return (
     <div className="quiz">
