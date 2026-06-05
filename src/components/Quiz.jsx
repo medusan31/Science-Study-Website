@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
@@ -11,6 +11,11 @@ export default function Quiz({ questions, onFinish, onHome }) {
 
   const q = questions[current]
   const isCalc = q.type === 'calculation'
+
+  const shuffledOptions = useMemo(() => {
+    if (!q.options) return []
+    return [...q.options].sort(() => Math.random() - 0.5)
+  }, [current])
   const isLast = current === questions.length - 1
   const progress = (current / questions.length) * 100
   const hasAnswer = isCalc ? calcValue.trim() !== '' : selected !== null
@@ -80,7 +85,7 @@ export default function Quiz({ questions, onFinish, onHome }) {
         </div>
       ) : (
         <div className="quiz-options">
-          {q.options.map((opt, i) => (
+          {shuffledOptions.map((opt, i) => (
             <button
               key={opt.id}
               className={`option-btn${selected === opt.id ? ' selected' : ''}`}
