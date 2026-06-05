@@ -175,15 +175,6 @@ body {
   text-align: left;
 }
 
-.home-config label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 16px;
-}
 
 .count-control {
   display: flex;
@@ -807,6 +798,200 @@ body {
   font-size: 1.4rem;
   font-weight: 800;
   color: var(--text);
+}
+
+/* ── Instant Feedback (Quiz) ── */
+.option-btn.revealed-correct {
+  border-color: var(--correct-border);
+  background: var(--correct-bg);
+  cursor: default;
+}
+.option-btn.revealed-correct .option-letter {
+  background: var(--correct);
+  border-color: var(--correct);
+  color: #fff;
+}
+.option-btn.revealed-wrong {
+  border-color: var(--wrong-border);
+  background: var(--wrong-bg);
+  cursor: default;
+}
+.option-btn.revealed-wrong .option-letter {
+  background: var(--wrong);
+  border-color: var(--wrong);
+  color: #fff;
+}
+
+.instant-feedback {
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+}
+.instant-feedback.correct {
+  border-color: var(--correct-border);
+  background: var(--correct-bg);
+}
+.instant-feedback.wrong {
+  border-color: var(--wrong-border);
+  background: var(--wrong-bg);
+}
+.instant-feedback-title {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.instant-feedback.correct .instant-feedback-title { color: var(--correct); }
+.instant-feedback.wrong .instant-feedback-title { color: var(--wrong); }
+.instant-feedback-body {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.instant-feedback-body strong { color: var(--text); }
+
+/* ── Home toggle ── */
+.home-config .config-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.toggle-row-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.toggle-row-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 100px;
+  transition: background 0.15s ease;
+}
+.toggle-switch input:checked + .toggle-track { background: var(--accent); }
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.15s ease;
+}
+.toggle-switch input:checked + .toggle-track::after { transform: translateX(20px); }
+
+/* ── Practice Panel (Review) ── */
+.review-practice-footer {
+  border-top: 1px solid var(--border);
+  padding: 14px 24px;
+}
+.practice-btn {
+  font-size: 13px;
+  padding: 8px 16px;
+  color: var(--accent-hover);
+  border-color: var(--neutral-border);
+}
+.practice-btn:hover {
+  background: var(--neutral-bg);
+  color: var(--accent-hover);
+  border-color: var(--accent);
+}
+.practice-panel {
+  background: var(--surface-2);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.practice-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-hover);
+}
+.practice-close {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+.practice-close:hover { color: var(--text); background: var(--surface); }
+.practice-question {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.practice-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.practice-result {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.practice-result.correct {
+  background: var(--correct-bg);
+  border: 1px solid var(--correct-border);
+  color: var(--correct);
+}
+.practice-result.wrong {
+  background: var(--wrong-bg);
+  border: 1px solid var(--wrong-border);
+  color: var(--wrong);
+}
+.practice-footer {
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* ── Scrollbar ── */

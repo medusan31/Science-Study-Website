@@ -10,6 +10,7 @@ function App() {
   const [questionCount, setQuestionCount] = useState(10)
   const [activeQuestions, setActiveQuestions] = useState([])
   const [userAnswers, setUserAnswers] = useState({})
+  const [instantFeedback, setInstantFeedback] = useState(false)
 
   const startQuiz = () => {
     const shuffled = [...questions].sort(() => Math.random() - 0.5)
@@ -33,6 +34,8 @@ function App() {
           setQuestionCount={setQuestionCount}
           onStart={startQuiz}
           totalQuestions={questions.length}
+          instantFeedback={instantFeedback}
+          setInstantFeedback={setInstantFeedback}
         />
       )}
       {screen === 'quiz' && (
@@ -40,6 +43,7 @@ function App() {
           questions={activeQuestions}
           onFinish={finishQuiz}
           onHome={() => setScreen('home')}
+          instantFeedback={instantFeedback}
         />
       )}
       {screen === 'results' && (
@@ -55,6 +59,7 @@ function App() {
         <Review
           questions={activeQuestions}
           userAnswers={userAnswers}
+          allQuestions={questions}
           onHome={() => setScreen('home')}
         />
       )}

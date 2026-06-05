@@ -1,6 +1,4 @@
-import { useState } from 'react'
-
-export default function Home({ title, description, questionCount, setQuestionCount, onStart, totalQuestions }) {
+export default function Home({ title, description, questionCount, setQuestionCount, onStart, totalQuestions, instantFeedback, setInstantFeedback }) {
   const max = totalQuestions
   const min = 1
 
@@ -37,7 +35,7 @@ export default function Home({ title, description, questionCount, setQuestionCou
       </div>
 
       <div className="home-config">
-        <label>How many questions?</label>
+        <label className="config-label">How many questions?</label>
         <div className="count-control">
           <input
             type="range"
@@ -56,6 +54,21 @@ export default function Home({ title, description, questionCount, setQuestionCou
             />
             <span>/ {max}</span>
           </div>
+        </div>
+
+        <div className="toggle-row">
+          <div className="toggle-row-text">
+            <div className="toggle-row-label">Instant Feedback</div>
+            <div className="toggle-row-desc">See if each answer is right as you go</div>
+          </div>
+          <label className="toggle-switch">
+            <input
+              type="checkbox"
+              checked={instantFeedback}
+              onChange={e => setInstantFeedback(e.target.checked)}
+            />
+            <span className="toggle-track" />
+          </label>
         </div>
       </div>
 

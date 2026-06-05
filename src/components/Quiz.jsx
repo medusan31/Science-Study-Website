@@ -2,11 +2,20 @@ import { useState, useEffect, useMemo } from 'react'
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
-export default function Quiz({ questions, onFinish, onHome }) {
+function checkCalc(q, value, unit) {
+  if (unit !== q.unit) return false
+  const val = parseFloat(value)
+  if (isNaN(val)) return false
+  const tol = Math.max(Math.abs(q.answer) * 0.02, 0.01)
+  return Math.abs(val - q.answer) <= tol
+}
+
+export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
   const [current, setCurrent] = useState(0)
   const [selected, setSelected] = useState(null)
   const [calcValue, setCalcValue] = useState('')
   const [calcUnit, setCalcUnit] = useState('')
+  const [calcFeedbackShown, setCalcFeedbackShown] = useState(false)
   const [answers, setAnswers] = useState({})
 
   const q = questions[current]
@@ -16,6 +25,7 @@ export default function Quiz({ questions, onFinish, onHome }) {
     if (!q.options) return []
     return [...q.options].sort(() => Math.random() - 0.5)
   }, [current])
+
   const isLast = current === questions.length - 1
   const progress = (current / questions.length) * 100
   const hasAnswer = isCalc ? calcValue.trim() !== '' : selected !== null
@@ -24,13 +34,19 @@ export default function Quiz({ questions, onFinish, onHome }) {
     setSelected(null)
     setCalcValue('')
     setCalcUnit(questions[current].allowedUnits?.[0] ?? '')
+    setCalcFeedbackShown(false)
   }, [current])
 
   const handleSelect = (optionId) => {
+    if (instantFeedback && selected !== null) return
     setSelected(optionId === selected ? null : optionId)
   }
 
   const handleNext = () => {
+    if (isCalc && instantFeedback && !calcFeedbackShown) {
+      setCalcFeedbackShown(true)
+      return
+    }
     const answer = isCalc
       ? { value: calcValue, unit: calcUnit || q.allowedUnits[0] }
       : selected
@@ -42,6 +58,26 @@ export default function Quiz({ questions, onFinish, onHome }) {
       setCurrent(current + 1)
     }
   }
+
+  const showMCFeedback = instantFeedback && selected !== null && !isCalc
+  const correctOpt = q.options?.find(o => o.correct)
+  const selectedCorrect = selected !== null && q.options?.find(o => o.id === selected)?.correct
+  const calcCorrect = calcFeedbackShown && checkCalc(q, calcValue, calcUnit || q.allowedUnits?.[0])
+
+  const getOptionClass = (opt) => {
+    if (showMCFeedback) {
+      if (opt.correct) return 'option-btn revealed-correct'
+      if (selected === opt.id) return 'option-btn revealed-wrong'
+      return 'option-btn'
+    }
+    return `option-btn${selected === opt.id ? ' selected' : ''}`
+  }
+
+  const btnText = isCalc && instantFeedback && !calcFeedbackShown
+    ? 'Check Answer'
+    : isLast ? 'Finish Quiz' : 'Next Question'
+
+  const isNextDisabled = (isCalc && instantFeedback && calcFeedbackShown) ? false : !hasAnswer
 
   return (
     <div className="quiz">
@@ -62,45 +98,67 @@ export default function Quiz({ questions, onFinish, onHome }) {
       </div>
 
       {isCalc ? (
-        <div className="calc-input-row">
-          <input
-            type="number"
-            className="calc-number-input"
-            placeholder="Enter your answer…"
-            value={calcValue}
-            onChange={e => setCalcValue(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter' && hasAnswer) handleNext() }}
-            autoFocus
-          />
-          <select
-            className="calc-unit-select"
-            value={calcUnit || q.allowedUnits[0]}
-            onChange={e => setCalcUnit(e.target.value)}
-          >
-            {q.allowedUnits.map(u => (
-              <option key={u} value={u}>{u}</option>
-            ))}
-          </select>
-        </div>
-      ) : (
-        <div className="quiz-options">
-          {shuffledOptions.map((opt, i) => (
-            <button
-              key={opt.id}
-              className={`option-btn${selected === opt.id ? ' selected' : ''}`}
-              onClick={() => handleSelect(opt.id)}
-              disabled={false}
+        <>
+          <div className="calc-input-row">
+            <input
+              type="number"
+              className="calc-number-input"
+              placeholder="Enter your answer…"
+              value={calcValue}
+              onChange={e => setCalcValue(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && hasAnswer && !calcFeedbackShown) handleNext() }}
+              disabled={calcFeedbackShown}
+              autoFocus
+            />
+            <select
+              className="calc-unit-select"
+              value={calcUnit || q.allowedUnits[0]}
+              onChange={e => setCalcUnit(e.target.value)}
+              disabled={calcFeedbackShown}
             >
-              <span className="option-letter">{LETTERS[i]}</span>
-              <span className="option-text">{opt.text}</span>
-            </button>
-          ))}
-        </div>
+              {q.allowedUnits.map(u => (
+                <option key={u} value={u}>{u}</option>
+              ))}
+            </select>
+          </div>
+          {calcFeedbackShown && (
+            <div className={`instant-feedback ${calcCorrect ? 'correct' : 'wrong'}`}>
+              <div className="instant-feedback-title">{calcCorrect ? 'Correct!' : 'Incorrect'}</div>
+              {!calcCorrect && (
+                <div className="instant-feedback-body">
+                  The correct answer is <strong>{q.answer} {q.unit}</strong>
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <div className="quiz-options">
+            {shuffledOptions.map((opt, i) => (
+              <button
+                key={opt.id}
+                className={getOptionClass(opt)}
+                onClick={() => handleSelect(opt.id)}
+                disabled={showMCFeedback}
+              >
+                <span className="option-letter">{LETTERS[i]}</span>
+                <span className="option-text">{opt.text}</span>
+              </button>
+            ))}
+          </div>
+          {showMCFeedback && (
+            <div className={`instant-feedback ${selectedCorrect ? 'correct' : 'wrong'}`}>
+              <div className="instant-feedback-title">{selectedCorrect ? 'Correct!' : 'Incorrect'}</div>
+              <div className="instant-feedback-body">{correctOpt?.correctExplanation}</div>
+            </div>
+          )}
+        </>
       )}
 
       <div className="quiz-footer">
-        <button className="btn btn-primary" onClick={handleNext} disabled={!hasAnswer}>
-          {isLast ? 'Finish Quiz' : 'Next Question'}
+        <button className="btn btn-primary" onClick={handleNext} disabled={isNextDisabled}>
+          {btnText}
         </button>
       </div>
     </div>
