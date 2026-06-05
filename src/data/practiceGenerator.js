@@ -1,3 +1,5 @@
+import { QUESTION_CATEGORIES, CATEGORY_LABELS } from './categories'
+
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)] }
 function round(n) { return parseFloat(n.toFixed(2)) }
 
@@ -50,11 +52,28 @@ function detectFormula(q) {
   return 'I_from_VR'
 }
 
+export function getCategoryLabel(qId) {
+  const cat = QUESTION_CATEGORIES[qId]
+  return cat ? CATEGORY_LABELS[cat] : null
+}
+
 export function generateSimilarQuestion(q, allQuestions, excludeIds = []) {
   if (q.type === 'calculation') {
     return { ...TEMPLATES[detectFormula(q)](), id: `practice-${Date.now()}` }
   }
-  let pool = allQuestions.filter(s => s.type !== 'calculation' && !excludeIds.includes(s.id) && s.id !== q.id)
+
+  const category = QUESTION_CATEGORIES[q.id]
+
+  // Try same category first (MC only)
+  let pool = allQuestions.filter(s =>
+    s.type !== 'calculation' &&
+    !excludeIds.includes(s.id) &&
+    s.id !== q.id &&
+    (category ? QUESTION_CATEGORIES[s.id] === category : true)
+  )
+  // Fallback: any MC not in quiz
+  if (!pool.length) pool = allQuestions.filter(s => s.type !== 'calculation' && !excludeIds.includes(s.id) && s.id !== q.id)
+  // Last resort: any MC at all
   if (!pool.length) pool = allQuestions.filter(s => s.type !== 'calculation' && s.id !== q.id)
   if (!pool.length) return null
   return pool[Math.floor(Math.random() * pool.length)]

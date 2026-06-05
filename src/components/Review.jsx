@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { generateSimilarQuestion } from '../data/practiceGenerator'
+import { generateSimilarQuestion, getCategoryLabel } from '../data/practiceGenerator'
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
@@ -21,7 +21,7 @@ function isPracticeCorrect(pq, state) {
 }
 
 function PracticePanel({ origQ, practice, onUpdate, onTryAnother, onClose }) {
-  const { q, inputValue, inputUnit, selectedId, submitted, shuffledOpts } = practice
+  const { q, inputValue, inputUnit, selectedId, submitted, shuffledOpts, categoryLabel } = practice
   const isCalc = q.type === 'calculation'
   const hasAnswer = isCalc ? inputValue.trim() !== '' : selectedId !== null
   const correct = submitted ? isPracticeCorrect(q, practice) : false
@@ -34,7 +34,7 @@ function PracticePanel({ origQ, practice, onUpdate, onTryAnother, onClose }) {
   return (
     <div className="practice-panel">
       <div className="practice-header">
-        <span className="practice-label">Practice</span>
+        <span className="practice-label">Practice{categoryLabel ? ` · ${categoryLabel}` : ''}</span>
         <button className="practice-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
 
@@ -130,6 +130,7 @@ export default function Review({ questions, userAnswers, allQuestions, onHome })
     const pq = generateSimilarQuestion(origQ, allQuestions, quizIds)
     if (!pq) return
     const shuffled = pq.options ? [...pq.options].sort(() => Math.random() - 0.5) : []
+    const categoryLabel = getCategoryLabel(origQ.id)
     setPractices(p => ({
       ...p,
       [origQ.id]: {
@@ -139,6 +140,7 @@ export default function Review({ questions, userAnswers, allQuestions, onHome })
         selectedId: null,
         submitted: false,
         shuffledOpts: shuffled,
+        categoryLabel,
       }
     }))
   }
