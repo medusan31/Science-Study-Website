@@ -147,7 +147,7 @@ export const questions = [
     question: 'In a parallel circuit, what is true about voltage across each branch?',
     options: [
       { id: 'a', text: 'The voltage is the same across every branch', correct: true, correctExplanation: 'In a parallel circuit, all branches connect directly across the same two nodes, so they all share the same voltage as the source. This is the defining property of parallel circuits.' },
-      { id: 'b', text: 'The voltage divides equally among branches', correct: false, whyChoose: 'Voltage "dividing" sounds similar to how current divides in parallel.', whyWrong: 'Voltage divides in series circuits. In parallel, each branch receives the full source voltage.' },
+      { id: 'b', text: 'Each branch gets a fraction of the total voltage, so branches share it', correct: false, whyChoose: 'Current splits in parallel, so it seems like voltage should split too.', whyWrong: 'Current splits in parallel — voltage does not. Every branch receives the full source voltage, not a fraction of it.' },
       { id: 'c', text: 'The voltage adds up across branches', correct: false, whyChoose: 'You might think adding more branches increases the total voltage.', whyWrong: 'Voltage never adds up in parallel — all branches see the same voltage. Voltage adds in series.' },
       { id: 'd', text: 'The voltage is zero in all branches', correct: false, whyChoose: 'You might confuse "shared" voltage with "no" voltage.', whyWrong: 'Every branch in a parallel circuit sees the full source voltage, not zero.' },
     ],
