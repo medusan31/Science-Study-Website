@@ -27,8 +27,7 @@ export default function Quiz({ questions, onFinish, onHome }) {
   }, [current])
 
   const handleSelect = (optionId) => {
-    if (selected !== null) return
-    setSelected(optionId)
+    setSelected(optionId === selected ? null : optionId)
   }
 
   const handleNext = () => {
@@ -90,7 +89,7 @@ export default function Quiz({ questions, onFinish, onHome }) {
               key={opt.id}
               className={`option-btn${selected === opt.id ? ' selected' : ''}`}
               onClick={() => handleSelect(opt.id)}
-              disabled={selected !== null}
+              disabled={false}
             >
               <span className="option-letter">{LETTERS[i]}</span>
               <span className="option-text">{opt.text}</span>
