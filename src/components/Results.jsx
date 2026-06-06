@@ -12,8 +12,9 @@ function isAnswerCorrect(q, answer) {
   return answer === correctOpt?.id
 }
 
-export default function Results({ questions, userAnswers, onReview, onHome, onRetry }) {
+export default function Results({ questions, userAnswers, onReview, onHome, onRetry, onRetryWrong }) {
   const correct = questions.filter(q => isAnswerCorrect(q, userAnswers[q.id])).length
+  const wrongQuestions = questions.filter(q => !isAnswerCorrect(q, userAnswers[q.id]))
   const total = questions.length
   const pct = Math.round((correct / total) * 100)
   const circumference = 2 * Math.PI * 52
@@ -69,7 +70,12 @@ export default function Results({ questions, userAnswers, onReview, onHome, onRe
 
       <div className="results-actions">
         <button className="btn btn-primary" onClick={onReview}>Review Answers</button>
-        <button className="btn btn-secondary" onClick={onRetry}>Try Again</button>
+        {wrongQuestions.length > 0 && (
+          <button className="btn btn-secondary" onClick={() => onRetryWrong(wrongQuestions)}>
+            Try Again ({wrongQuestions.length} wrong)
+          </button>
+        )}
+        <button className="btn btn-ghost" onClick={onRetry}>Try All Again</button>
         <button className="btn btn-ghost" onClick={onHome}>Back to Home</button>
       </div>
     </div>

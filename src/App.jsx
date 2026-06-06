@@ -92,6 +92,12 @@ function App() {
     }
   }
 
+  const retryWrong = (wrongQuestions) => {
+    setActiveQuestions(wrongQuestions)
+    setUserAnswers({})
+    setScreen('quiz')
+  }
+
   const startQuiz = () => {
     const shuffled = [...questions].sort(() => Math.random() - 0.5)
     setActiveQuestions(shuffled.slice(0, questionCount))
@@ -169,6 +175,7 @@ const finishQuiz = (answers) => {
           onReview={() => setScreen('review')}
           onHome={() => setScreen('home')}
           onRetry={startQuiz}
+          onRetryWrong={retryWrong}
         />
       )}
       {screen === 'review' && (
