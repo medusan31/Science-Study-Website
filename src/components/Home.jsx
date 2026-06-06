@@ -1,11 +1,16 @@
-export default function Home({ title, description, questionCount, setQuestionCount, onStart, onStudy, totalQuestions, instantFeedback, setInstantFeedback }) {
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+export default function Home({
+  title, description, questionCount, setQuestionCount,
+  onStart, onStudy, totalQuestions, instantFeedback, setInstantFeedback,
+  currentUser, onLogout, quizHistory, onReviewPast,
+}) {
   const max = totalQuestions
   const min = 1
 
-  const handleSlider = (e) => {
-    setQuestionCount(Number(e.target.value))
-  }
-
+  const handleSlider = (e) => setQuestionCount(Number(e.target.value))
   const handleInput = (e) => {
     const val = Math.min(max, Math.max(min, Number(e.target.value) || min))
     setQuestionCount(val)
@@ -13,6 +18,11 @@ export default function Home({ title, description, questionCount, setQuestionCou
 
   return (
     <div className="home">
+      <div className="home-user-bar">
+        <span className="home-user-name">{currentUser}</span>
+        <button className="btn btn-ghost home-logout-btn" onClick={onLogout}>Log Out</button>
+      </div>
+
       <div className="home-header">
         <div className="badge">Quiz</div>
         <h1>{title}</h1>
@@ -81,6 +91,30 @@ export default function Home({ title, description, questionCount, setQuestionCou
         </button>
         <span className="hint">{questionCount} random questions from the full bank</span>
       </div>
+
+      {quizHistory && quizHistory.length > 0 && (
+        <div className="home-history">
+          <div className="home-history-label">Recent Quizzes</div>
+          {quizHistory.map(entry => {
+            const pct = Math.round((entry.correct / entry.total) * 100)
+            return (
+              <div key={entry.id} className="history-item">
+                <div className="history-item-info">
+                  <span className="history-score">{entry.correct}/{entry.total}</span>
+                  <span className="history-pct">{pct}%</span>
+                  <span className="history-date">{formatDate(entry.date)}</span>
+                </div>
+                <button
+                  className="btn btn-ghost history-review-btn"
+                  onClick={() => onReviewPast(entry)}
+                >
+                  Review
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

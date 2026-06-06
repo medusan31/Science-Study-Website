@@ -16,9 +16,8 @@ const CATEGORY_META = {
   concepts:   { icon: '💡', desc: 'Voltage, current, charge, AC/DC, and Kirchhoff\'s laws' },
 }
 
-export default function Study({ onHome }) {
+export default function Study({ onHome, mastered, onMastered }) {
   const [activeKey, setActiveKey] = useState(null)
-  const [mastered, setMastered] = useState(new Set())
 
   if (activeKey) {
     return (
@@ -26,7 +25,7 @@ export default function Study({ onHome }) {
         article={{ ...articles[activeKey], categoryLabel: CATEGORY_LABELS[activeKey] }}
         onBack={() => setActiveKey(null)}
         onMastered={() => {
-          setMastered(prev => new Set([...prev, activeKey]))
+          onMastered(activeKey)
           setActiveKey(null)
         }}
       />
