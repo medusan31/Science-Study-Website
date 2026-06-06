@@ -1,5 +1,8 @@
+import { checkShortAnswer } from '../data/utils'
+
 function isAnswerCorrect(q, answer) {
   if (answer == null) return false
+  if (q.type === 'short-answer') return checkShortAnswer(q, answer)
   if (q.type === 'calculation') {
     if (typeof answer !== 'object' || !answer.value) return false
     if (answer.unit !== q.unit) return false

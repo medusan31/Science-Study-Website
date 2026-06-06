@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { generateSimilarQuestion, getCategoryLabel } from '../data/practiceGenerator'
+import { checkShortAnswer } from '../data/utils'
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
@@ -166,9 +167,13 @@ export default function Review({ questions, userAnswers, allQuestions, onHome })
         const userAnswer = userAnswers[q.id]
         const isCalc = q.type === 'calculation'
 
+        const isShortAnswer = q.type === 'short-answer'
+
         let isCorrect
         if (isCalc) {
           isCorrect = isCalcCorrect(q, userAnswer)
+        } else if (isShortAnswer) {
+          isCorrect = checkShortAnswer(q, userAnswer)
         } else {
           const correctOpt = q.options?.find(o => o.correct)
           isCorrect = userAnswer === correctOpt?.id
@@ -186,7 +191,18 @@ export default function Review({ questions, userAnswers, allQuestions, onHome })
               </span>
             </div>
 
-            {isCalc ? (
+            {isShortAnswer ? (
+              <div className="review-short-body">
+                <div className={`review-short-answer ${isCorrect ? 'is-correct' : 'is-wrong'}`}>
+                  <div className="review-calc-label">Your Answer</div>
+                  <div className="review-calc-value">{userAnswer || '—'}</div>
+                </div>
+                <div className="review-explanation" style={{ marginTop: '12px' }}>
+                  <div className="expl-label">Explanation</div>
+                  <p>{q.explanation}</p>
+                </div>
+              </div>
+            ) : isCalc ? (
               <div className="review-calc-body">
                 <div className={`review-calc-box ${isCorrect ? 'is-correct' : 'is-wrong'}`}>
                   <div className="review-calc-label">Your Answer</div>

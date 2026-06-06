@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { checkShortAnswer } from './data/utils'
 import Auth from './components/Auth'
 import Home from './components/Home'
 import Quiz from './components/Quiz'
@@ -21,6 +22,7 @@ function calcScore(qs, answers) {
   return qs.filter(q => {
     const a = answers[q.id]
     if (a == null) return false
+    if (q.type === 'short-answer') return checkShortAnswer(q, a)
     if (q.type === 'calculation') {
       if (typeof a !== 'object' || !a.value) return false
       if (a.unit !== q.unit) return false

@@ -58,4 +58,16 @@ export const QUESTION_CATEGORIES = {
   4: 'concepts', 5: 'concepts', 57: 'concepts', 59: 'concepts',
   72: 'concepts', 77: 'concepts', 78: 'concepts', 82: 'concepts',
   87: 'concepts', 88: 'concepts', 100: 'concepts',
+  119: 'concepts',
+
+  // Short-answer additions
+  107: 'ohm', 108: 'ohm',
+  109: 'power', 110: 'power',
+  111: 'series',
+  112: 'parallel',
+  113: 'history', 114: 'history',
+  115: 'conductors', 116: 'conductors',
+  117: 'magnets',
+  118: 'safety',
+  120: 'diagrams', 121: 'diagrams',
 }

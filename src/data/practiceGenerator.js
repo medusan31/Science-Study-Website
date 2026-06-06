@@ -65,16 +65,15 @@ export function generateSimilarQuestion(q, allQuestions, excludeIds = []) {
   const category = QUESTION_CATEGORIES[q.id]
 
   // Try same category first (MC only)
+  const isMC = s => s.type !== 'calculation' && s.type !== 'short-answer'
   let pool = allQuestions.filter(s =>
-    s.type !== 'calculation' &&
+    isMC(s) &&
     !excludeIds.includes(s.id) &&
     s.id !== q.id &&
     (category ? QUESTION_CATEGORIES[s.id] === category : true)
   )
-  // Fallback: any MC not in quiz
-  if (!pool.length) pool = allQuestions.filter(s => s.type !== 'calculation' && !excludeIds.includes(s.id) && s.id !== q.id)
-  // Last resort: any MC at all
-  if (!pool.length) pool = allQuestions.filter(s => s.type !== 'calculation' && s.id !== q.id)
+  if (!pool.length) pool = allQuestions.filter(s => isMC(s) && !excludeIds.includes(s.id) && s.id !== q.id)
+  if (!pool.length) pool = allQuestions.filter(s => isMC(s) && s.id !== q.id)
   if (!pool.length) return null
   return pool[Math.floor(Math.random() * pool.length)]
 }

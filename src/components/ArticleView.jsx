@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import Calculator from './Calculator'
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
@@ -40,6 +41,7 @@ function ArticleTable({ lines }) {
 
 function ExamplesBlock({ examples, onMastered }) {
   const [open, setOpen] = useState(false)
+  const [showCalc, setShowCalc] = useState(false)
   const [selected, setSelected] = useState({})   // qi -> optionId (pending, pre-submit)
   const [revealed, setRevealed] = useState({})   // qi -> optionId (submitted)
 
@@ -79,8 +81,22 @@ function ExamplesBlock({ examples, onMastered }) {
           <div className="examples-panel">
             <div className="examples-panel-header">
               <span className="examples-panel-label">EXAMPLE QUESTIONS</span>
-              <button className="examples-close" onClick={() => setOpen(false)}>✕</button>
+              <div className="examples-header-actions">
+                <button
+                  className={`btn btn-ghost examples-calc-btn${showCalc ? ' active' : ''}`}
+                  onClick={() => setShowCalc(v => !v)}
+                  title="Toggle calculator"
+                >
+                  🧮
+                </button>
+                <button className="examples-close" onClick={() => setOpen(false)}>✕</button>
+              </div>
             </div>
+            {showCalc && (
+              <div className="examples-calc-panel">
+                <Calculator />
+              </div>
+            )}
             <div className="examples-questions">
               {examples.map((ex, qi) => {
                 const chosen = selected[qi]

@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
+import Calculator from './Calculator'
+import { checkShortAnswer } from '../data/utils'
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
@@ -15,12 +17,16 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
   const [selected, setSelected] = useState(null)
   const [calcValue, setCalcValue] = useState('')
   const [calcUnit, setCalcUnit] = useState('')
+  const [shortValue, setShortValue] = useState('')
   const [calcFeedbackShown, setCalcFeedbackShown] = useState(false)
   const [mcFeedbackShown, setMcFeedbackShown] = useState(false)
+  const [shortFeedbackShown, setShortFeedbackShown] = useState(false)
   const [answers, setAnswers] = useState({})
+  const [showCalc, setShowCalc] = useState(false)
 
   const q = questions[current]
   const isCalc = q.type === 'calculation'
+  const isShortAnswer = q.type === 'short-answer'
 
   const shuffledOptions = useMemo(() => {
     if (!q.options) return []
@@ -29,14 +35,20 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
 
   const isLast = current === questions.length - 1
   const progress = (current / questions.length) * 100
-  const hasAnswer = isCalc ? calcValue.trim() !== '' : selected !== null
+  const hasAnswer = isCalc
+    ? calcValue.trim() !== ''
+    : isShortAnswer
+      ? shortValue.trim() !== ''
+      : selected !== null
 
   useEffect(() => {
     setSelected(null)
     setCalcValue('')
     setCalcUnit(questions[current].allowedUnits?.[0] ?? '')
+    setShortValue('')
     setCalcFeedbackShown(false)
     setMcFeedbackShown(false)
+    setShortFeedbackShown(false)
   }, [current])
 
   const handleSelect = (optionId) => {
@@ -44,7 +56,7 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
   }
 
   const handleNext = () => {
-    if (!isCalc && instantFeedback && !mcFeedbackShown) {
+    if (!isCalc && !isShortAnswer && instantFeedback && !mcFeedbackShown) {
       setMcFeedbackShown(true)
       return
     }
@@ -52,9 +64,15 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
       setCalcFeedbackShown(true)
       return
     }
+    if (isShortAnswer && instantFeedback && !shortFeedbackShown) {
+      setShortFeedbackShown(true)
+      return
+    }
     const answer = isCalc
       ? { value: calcValue, unit: calcUnit || q.allowedUnits[0] }
-      : selected
+      : isShortAnswer
+        ? shortValue
+        : selected
     const newAnswers = { ...answers, [q.id]: answer }
     if (isLast) {
       onFinish(newAnswers)
@@ -68,6 +86,7 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
   const correctOpt = q.options?.find(o => o.correct)
   const selectedCorrect = selected !== null && q.options?.find(o => o.id === selected)?.correct
   const calcCorrect = calcFeedbackShown && checkCalc(q, calcValue, calcUnit || q.allowedUnits?.[0])
+  const shortCorrect = shortFeedbackShown && checkShortAnswer(q, shortValue)
 
   const getOptionClass = (opt) => {
     if (showMCFeedback) {
@@ -78,11 +97,14 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
     return `option-btn${selected === opt.id ? ' selected' : ''}`
   }
 
-  const btnText = isCalc && instantFeedback && !calcFeedbackShown
+  const btnText = ((isCalc && instantFeedback && !calcFeedbackShown) ||
+    (isShortAnswer && instantFeedback && !shortFeedbackShown))
     ? 'Check Answer'
     : isLast ? 'Finish Quiz' : 'Next Question'
 
-  const isNextDisabled = (instantFeedback && (mcFeedbackShown || calcFeedbackShown)) ? false : !hasAnswer
+  const isNextDisabled = (instantFeedback && (mcFeedbackShown || calcFeedbackShown || shortFeedbackShown))
+    ? false
+    : !hasAnswer
 
   return (
     <div className="quiz">
@@ -137,6 +159,27 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
             </div>
           )}
         </>
+      ) : isShortAnswer ? (
+        <>
+          <div className="short-answer-row">
+            <input
+              type="text"
+              className="short-answer-input"
+              placeholder="Type your answer…"
+              value={shortValue}
+              onChange={e => setShortValue(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && hasAnswer && !shortFeedbackShown) handleNext() }}
+              disabled={shortFeedbackShown}
+              autoFocus
+            />
+          </div>
+          {shortFeedbackShown && (
+            <div className={`instant-feedback ${shortCorrect ? 'correct' : 'wrong'}`}>
+              <div className="instant-feedback-title">{shortCorrect ? 'Correct!' : 'Incorrect'}</div>
+              <div className="instant-feedback-body">{q.explanation}</div>
+            </div>
+          )}
+        </>
       ) : (
         <>
           <div className="quiz-options">
@@ -161,7 +204,20 @@ export default function Quiz({ questions, onFinish, onHome, instantFeedback }) {
         </>
       )}
 
+      {showCalc && (
+        <div className="quiz-calc-panel">
+          <Calculator />
+        </div>
+      )}
+
       <div className="quiz-footer">
+        <button
+          className={`btn btn-ghost quiz-calc-toggle${showCalc ? ' active' : ''}`}
+          onClick={() => setShowCalc(v => !v)}
+          title="Toggle calculator"
+        >
+          🧮
+        </button>
         <button className="btn btn-primary" onClick={handleNext} disabled={isNextDisabled}>
           {btnText}
         </button>

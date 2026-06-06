@@ -379,6 +379,8 @@ body {
 .quiz-footer {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
 }
 
 /* ── Results ── */
@@ -1687,6 +1689,175 @@ body {
 .history-review-btn {
   padding: 5px 12px;
   font-size: 12px;
+}
+
+/* ── Short Answer ── */
+.short-answer-row {
+  margin-bottom: 16px;
+}
+
+.short-answer-input {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.12s ease;
+  box-sizing: border-box;
+}
+
+.short-answer-input:focus {
+  border-color: var(--accent);
+}
+
+.short-answer-input:disabled {
+  opacity: 0.7;
+}
+
+.review-short-body {
+  padding: 12px 16px;
+}
+
+.review-short-answer {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--border);
+}
+
+.review-short-answer.is-correct {
+  border-left-color: #22c55e;
+}
+
+.review-short-answer.is-wrong {
+  border-left-color: #ef4444;
+}
+
+/* ── Calculator ── */
+.calculator {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  width: 220px;
+}
+
+.calc-display-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  min-height: 44px;
+}
+
+.calc-op-hint {
+  font-size: 16px;
+  color: var(--accent);
+  font-weight: 600;
+  min-width: 16px;
+}
+
+.calc-display {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-all;
+  text-align: right;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+.calc-btn {
+  padding: 10px 6px;
+  border-radius: 6px;
+  border: none;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.calc-btn:hover { background: var(--border); }
+.calc-btn:active { background: var(--accent); color: #fff; }
+
+.calc-btn-op {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--accent-hover);
+  font-weight: 600;
+}
+
+.calc-btn-op:hover { background: var(--accent); color: #fff; }
+
+.calc-btn-fn {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.calc-btn-eq {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.calc-btn-eq:hover { background: var(--accent-hover); }
+
+.calc-btn-zero {
+  grid-column: span 2;
+}
+
+/* ── Quiz calculator panel ── */
+.quiz-calc-panel {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 0 12px;
+}
+
+.quiz-calc-toggle {
+  padding: 10px 14px;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.quiz-calc-toggle.active {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: var(--accent);
+}
+
+/* ── Article calculator panel ── */
+.examples-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.examples-calc-btn {
+  padding: 4px 8px;
+  font-size: 16px;
+}
+
+.examples-calc-btn.active {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: var(--accent);
+}
+
+.examples-calc-panel {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-start;
 }
 
 /* ── Scrollbar ── */
