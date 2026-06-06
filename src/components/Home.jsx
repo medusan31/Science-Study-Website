@@ -1,4 +1,4 @@
-export default function Home({ title, description, questionCount, setQuestionCount, onStart, totalQuestions, instantFeedback, setInstantFeedback }) {
+export default function Home({ title, description, questionCount, setQuestionCount, onStart, onStudy, totalQuestions, instantFeedback, setInstantFeedback }) {
   const max = totalQuestions
   const min = 1
 
@@ -75,6 +75,9 @@ export default function Home({ title, description, questionCount, setQuestionCou
       <div className="home-start">
         <button className="btn btn-primary" onClick={onStart}>
           Start Quiz
+        </button>
+        <button className="btn btn-secondary" onClick={onStudy}>
+          Study Guide
         </button>
         <span className="hint">{questionCount} random questions from the full bank</span>
       </div>

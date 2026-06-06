@@ -3,6 +3,7 @@ import Home from './components/Home'
 import Quiz from './components/Quiz'
 import Results from './components/Results'
 import Review from './components/Review'
+import Study from './components/Study'
 import { questions, QUIZ_TITLE, QUIZ_DESCRIPTION } from './data/questions'
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           questionCount={questionCount}
           setQuestionCount={setQuestionCount}
           onStart={startQuiz}
+          onStudy={() => setScreen('study')}
           totalQuestions={questions.length}
           instantFeedback={instantFeedback}
           setInstantFeedback={setInstantFeedback}
@@ -62,6 +64,9 @@ function App() {
           allQuestions={questions}
           onHome={() => setScreen('home')}
         />
+      )}
+      {screen === 'study' && (
+        <Study onHome={() => setScreen('home')} />
       )}
     </div>
   )
