@@ -1098,12 +1098,12 @@ body {
 }
 
 .study-card-mastered {
-  background: #f0fdf4;
+  background: #bbf7d0;
   border-color: #22c55e;
 }
 
 .study-card-mastered:hover {
-  background: #dcfce7;
+  background: #86efac;
   border-color: #16a34a;
 }
 
