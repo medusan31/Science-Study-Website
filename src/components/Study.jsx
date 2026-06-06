@@ -18,12 +18,17 @@ const CATEGORY_META = {
 
 export default function Study({ onHome }) {
   const [activeKey, setActiveKey] = useState(null)
+  const [mastered, setMastered] = useState(new Set())
 
   if (activeKey) {
     return (
       <ArticleView
         article={{ ...articles[activeKey], categoryLabel: CATEGORY_LABELS[activeKey] }}
         onBack={() => setActiveKey(null)}
+        onMastered={() => {
+          setMastered(prev => new Set([...prev, activeKey]))
+          setActiveKey(null)
+        }}
       />
     )
   }
@@ -53,13 +58,15 @@ export default function Study({ onHome }) {
         {Object.keys(articles).map(key => {
           const meta = CATEGORY_META[key]
           return (
-            <button key={key} className="study-card" onClick={() => setActiveKey(key)}>
+            <button key={key} className={`study-card${mastered.has(key) ? ' study-card-mastered' : ''}`} onClick={() => setActiveKey(key)}>
               <div className="study-card-icon">{meta.icon}</div>
               <div className="study-card-body">
                 <div className="study-card-title">{CATEGORY_LABELS[key]}</div>
                 <div className="study-card-desc">{meta.desc}</div>
               </div>
-              <div className="study-card-arrow">→</div>
+              {mastered.has(key)
+                ? <div className="study-card-check">✓</div>
+                : <div className="study-card-arrow">→</div>}
             </button>
           )
         })}

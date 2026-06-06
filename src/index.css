@@ -1097,6 +1097,27 @@ body {
   color: var(--accent-hover);
 }
 
+.study-card-mastered {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+.study-card-mastered:hover {
+  background: #dcfce7;
+  border-color: #16a34a;
+}
+
+.study-card-mastered .study-card-title {
+  color: #15803d;
+}
+
+.study-card-check {
+  color: #16a34a;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
 /* ── Article View ── */
 .article-view {
   max-width: 680px;
@@ -1458,7 +1479,18 @@ body {
   color: var(--text-muted);
 }
 
+.examples-footer-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .examples-reset-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.examples-finish-btn {
   padding: 6px 14px;
   font-size: 13px;
 }

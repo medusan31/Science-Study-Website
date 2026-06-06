@@ -38,7 +38,7 @@ function ArticleTable({ lines }) {
   )
 }
 
-function ExamplesBlock({ examples }) {
+function ExamplesBlock({ examples, onMastered }) {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState({})   // qi -> optionId (pending, pre-submit)
   const [revealed, setRevealed] = useState({})   // qi -> optionId (submitted)
@@ -146,12 +146,19 @@ function ExamplesBlock({ examples }) {
                     ? `All ${examples.length} correct`
                     : `${correctCount} of ${examples.length} correct`}
                 </span>
-                <button
-                  className="btn btn-ghost examples-reset-btn"
-                  onClick={() => { setSelected({}); setRevealed({}) }}
-                >
-                  Try Again
-                </button>
+                <div className="examples-footer-actions">
+                  <button
+                    className="btn btn-ghost examples-reset-btn"
+                    onClick={() => { setSelected({}); setRevealed({}) }}
+                  >
+                    Try Again
+                  </button>
+                  {correctCount === examples.length && onMastered && (
+                    <button className="btn btn-primary examples-finish-btn" onClick={onMastered}>
+                      Finish Article ✓
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -161,7 +168,7 @@ function ExamplesBlock({ examples }) {
   )
 }
 
-function parseBody(body, examples) {
+function parseBody(body, examples, onMastered) {
   const lines = body.split('\n')
   const elements = []
   let i = 0
@@ -172,7 +179,7 @@ function parseBody(body, examples) {
     if (t === '') { i++; continue }
 
     if (t === '[[examples]]') {
-      elements.push(<ExamplesBlock key={`ex-${i}`} examples={examples} />)
+      elements.push(<ExamplesBlock key={`ex-${i}`} examples={examples} onMastered={onMastered} />)
       i++; continue
     }
 
@@ -231,10 +238,10 @@ function parseBody(body, examples) {
   return elements
 }
 
-export default function ArticleView({ article, onBack }) {
+export default function ArticleView({ article, onBack, onMastered }) {
   const bodyElements = useMemo(
-    () => parseBody(article.body, article.examples),
-    [article]
+    () => parseBody(article.body, article.examples, onMastered),
+    [article, onMastered]
   )
 
   return (
