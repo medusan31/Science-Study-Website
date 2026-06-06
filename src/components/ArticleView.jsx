@@ -147,11 +147,25 @@ function ExamplesBlock({ examples, onMastered }) {
                     : `${correctCount} of ${examples.length} correct`}
                 </span>
                 <div className="examples-footer-actions">
+                  {correctCount < examples.length && (
+                    <button
+                      className="btn btn-ghost examples-reset-btn"
+                      onClick={() => {
+                        const wrongKeys = Object.keys(revealed).filter(qi =>
+                          !examples[qi]?.options.find(o => o.id === revealed[qi])?.correct
+                        )
+                        setRevealed(prev => { const n = { ...prev }; wrongKeys.forEach(k => delete n[k]); return n })
+                        setSelected(prev => { const n = { ...prev }; wrongKeys.forEach(k => delete n[k]); return n })
+                      }}
+                    >
+                      Try Again
+                    </button>
+                  )}
                   <button
                     className="btn btn-ghost examples-reset-btn"
                     onClick={() => { setSelected({}); setRevealed({}) }}
                   >
-                    Try Again
+                    {correctCount === examples.length ? 'Try Again' : 'Try All Again'}
                   </button>
                   {correctCount === examples.length && onMastered && (
                     <button className="btn btn-primary examples-finish-btn" onClick={onMastered}>

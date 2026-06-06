@@ -99,13 +99,7 @@ function App() {
     setScreen('quiz')
   }
 
-  const retryWrong = (wrongQuestions) => {
-    setActiveQuestions(wrongQuestions)
-    setUserAnswers({})
-    setScreen('quiz')
-  }
-
-  const finishQuiz = (answers) => {
+const finishQuiz = (answers) => {
     setUserAnswers(answers)
     const correct = calcScore(activeQuestions, answers)
     const entry = {
@@ -175,7 +169,6 @@ function App() {
           onReview={() => setScreen('review')}
           onHome={() => setScreen('home')}
           onRetry={startQuiz}
-          onRetryWrong={retryWrong}
         />
       )}
       {screen === 'review' && (
